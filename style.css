@@ -1,0 +1,126 @@
+:root {
+  --ink:#111827; 
+  --muted:#6b7280; 
+  --brand:#0ea5e9; 
+  --line:#e5e7eb;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color: var(--ink);
+  line-height: 1.6;
+}
+.wrap { max-width: 1200px; margin:0 auto; padding:0 20px; }
+
+header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px 0;
+  border-bottom:1px solid var(--line);
+  position:sticky; top:0; background:#fff;
+  z-index:50;
+}
+header strong { font-size:20px; font-weight:700; }
+
+nav {
+  display:flex; align-items:center; gap:20px;
+}
+
+nav a { font-size:16px; font-weight:600; text-decoration:none; color:var(--ink); padding:8px 0; }
+
+.userbar { display:flex; align-items:center; gap:12px; }
+.userbar img { height:60px !important; width:auto; object-fit:contain; }
+
+.btn { padding:12px 18px; border-radius:10px; font-weight:700; background:var(--brand); color:#fff; text-decoration:none; }
+h2 { margin-top:28px; }
+label { display:block; margin:10px 0 6px; font-weight:600; }
+input, select { width:100%; padding:10px; border:1px solid var(--line); border-radius:8px; font:inherit; }
+.small{ font-size:12px; } 
+.muted{ color:var(--muted); }
+html{ scroll-behavior:smooth; }
+section{ scroll-margin-top:90px; } /* sticky header için anchor offset */
+
+
+.auth-box input{width:100%;max-width:360px;padding:10px;margin:6px 0;border:1px solid var(--line);border-radius:8px}
+.auth-box button{margin:4px 6px 4px 0;padding:10px 14px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer}
+#btn-google{border-color:#4285f4}
+
+/* Sign-in redesign */
+.signin-wrap{padding:60px 0 80px; display:flex; flex-direction:column; align-items:center}
+.signin-title{font-size:44px;letter-spacing:1px;margin:10px 0 24px; text-align:center; width:100%}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.04);padding:24px}
+.signin-card{max-width:560px;width:100%;margin:0 auto}
+.field{margin:10px 0 14px}
+.row{display:flex;gap:10px;align-items:center;margin:8px 0}
+.row.between{justify-content:space-between}
+.row.center{align-items:center}
+.small-gap{gap:6px}
+.btn.primary{background:#ef4444}
+.btn.outline{background:#fff;color:#111;border:1px solid var(--line)}
+.link{color:#0ea5e9;text-decoration:none}
+.row.center{justify-content:center}
+
+
+
+
+body.no-splash #splash { display: none; }  /* varsayılan: gizli, flicker yok */
+body.noscroll { overflow: hidden; }        /* splash açıkken kaydırma kilidi */
+
+#splash{
+  position: fixed; inset:0;
+  background: url("assets/logo.JPG") center/cover no-repeat;
+  display: grid; place-items: center;
+  z-index: 9999; cursor: pointer;
+  transform: translateY(0);
+  transition: transform 800ms cubic-bezier(.22,.61,.36,1);
+}
+#splash.dismissed{
+  transform: translateY(-100%);
+  pointer-events: none;
+  
+  
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 foto yan yana */
+  gap: 20px; /* foto arası boşluk */
+  max-width: 1000px; /* isteğe bağlı genişlik */
+  margin: auto;
+}
+
+.gallery-grid img {
+  width: 100%;      /* genişliği doldur */
+  height: 400px;    /* boyu sabitle */
+  object-fit: cover; /* oranı koruyup kırpar */
+  border-radius: 10px; /* opsiyonel: köşeleri yumuşatır */
+}
+.about-photo {
+  width: 450px;   /* en */
+  height: 450px;  /* boy */
+  object-fit: cover;
+}
+
+
+.splash-inner{
+  text-align:center; color:#fff; text-shadow:0 2px 18px rgba(0,0,0,.35); padding:24px;
+}
+.splash-inner .logo{ width:140px; height:auto; margin-bottom:12px; }
+.splash-inner .tagline{ margin:0 0 6px; font-weight:600; }
+.splash-inner .hint{ font-size:14px; opacity:.9; }
+
+
+.hero {
+  position: relative;
+  padding: 80px 0;
+  text-align: center;
+  background: url("assets/b.png") no-repeat center center/cover;
+  color: #fff;
+}
+.hero::before {
+  content:"";
+  position:absolute; inset:0;
+  background: rgba(0,0,0,.45); /* overlay */
+}
+.hero *{ position: relative; }

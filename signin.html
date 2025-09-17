@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign In</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+   <header class="wrap">
+    <strong>Stretch Mate</strong>
+    <nav>
+      <a href="index.html?nosplash=1" class="active">About</a>
+      <a href="services.html">Services</a>
+      <a href="booking.html">Booking</a>
+      <a href="contact.html">Contact</a>
+      <a href="signin.html">Sign In</a>
+    </nav>
+    <div class="userbar">
+      <img src="assets/logo.JPG" alt="Logo" style="height:28px; vertical-align:middle; margin-right:8px;" />
+      <span id="whoami">—</span>
+      <button id="btn-logout" class="btn" type="button" style="margin-left:8px;">Logout</button>
+    </div>
+  </header>
+  
+  <!-- Sign In formu -->
+  <main class="wrap signin-wrap">
+    <h1 class="signin-title">SIGN IN</h1>
+
+    <section class="card signin-card">
+      <div id="signedOutView">
+        <div class="field">
+          <label>Email Address</label>
+          <input id="auth-email" type="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <input id="auth-pw" type="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+
+        <div class="row between center small-gap">
+          <label class="check"><input id="remember-me" type="checkbox"> Remember Me</label>
+          <a class="link" id="link-forgot" href="#">Forgot your password?</a>
+        </div>
+
+        <div class="row center">
+          <button id="btn-login" type="button" class="btn primary">Sign In</button>
+        </div>
+
+        <div class="row center">
+          <button id="btn-google" type="button" class="btn outline">Continue with Google</button>
+        </div>
+
+        <p class="muted small">New here? <a class="link" href="register.html">Create an Account</a></p>
+        <button id="btn-signup" type="button" style="display:none"></button>
+
+        <p id="auth-msg" class="muted small"></p>
+      </div>
+
+      <div id="resetView" style="display:none;">
+        <h2 style="margin:0 0 10px">Set a new password</h2>
+        <div class="field">
+          <label>New password</label>
+          <input id="reset-pw" type="password" placeholder="New password">
+        </div>
+        <div class="field">
+          <label>Confirm password</label>
+          <input id="reset-pw2" type="password" placeholder="Repeat password">
+        </div>
+        <div class="row">
+          <button id="btn-reset" type="button" class="btn primary">Update Password</button>
+        </div>
+        <p id="reset-msg" class="muted small"></p>
+      </div>
+
+      <div id="signedInView" style="display:none;">
+        <p>Logged in as <strong id="whoami-signin">—</strong></p>
+        <a id="btn-logout"
+           class="btn"
+           href="http://localhost:8080/physiotherapy_site/index.html?nosplash=1">
+           Log out</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap muted small">© Furkan Kus</footer>
+
+  <!-- supabase -->
+<script  src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+ 
+  const SUPABASE_URL  = 'https://aivmxnjspqcmijenzcij.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpdm14bmpzcHFjbWlqZW56Y2lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2MjAxMDgsImV4cCI6MjA3MTE5NjEwOH0.piMJEGE1gGAy8lwwQEpqx7MbXcYrj1NcsQLmbppQvxw';
+  if (!window.sb) {
+      window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+        auth: { persistSession:true, storageKey:'sb-booking' }
+      });
+      console.log('[init] Supabase client ready');
+    }
+</script>
+<script  src="app.js?v=13"></script>
+</body>
+</html>

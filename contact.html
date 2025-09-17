@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+  <header class="wrap">
+    <strong>Furkan Kus</strong>
+    <nav>
+      <a href="index.html?nosplash=1" class="active">About</a>
+      <a href="services.html">Services</a>
+      <a href="booking.html">Booking</a>
+      <a href="contact.html">Contact</a>
+      <a href="signin.html">Sign In</a>
+    </nav>
+    <div class="userbar">
+      <img src="assets/logo.JPG" alt="Logo" style="height:28px; vertical-align:middle; margin-right:8px;" />
+      <span id="whoami">—</span>
+      <button id="btn-logout" class="btn" type="button" style="margin-left:8px;">Logout</button>
+    </div>
+  </header>
+  
+
+  <main class="wrap">
+    <section>
+      <h1>Contact</h1>
+      <p><a href="tel:+123456789">+1 234 567 89</a> ·
+         <a href="https://wa.me/123456789" target="_blank">WhatsApp</a> ·
+         <a href="mailto:hello@example.com">hello@example.com</a></p>
+    </section>
+  </main>
+
+  <footer class="wrap muted small">© Therapist Name</footer>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL  = 'https://aivmxnjspqcmijenzcij.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpdm14bmpzcHFjbWlqZW56Y2lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2MjAxMDgsImV4cCI6MjA3MTE5NjEwOH0.piMJEGE1gGAy8lwwQEpqx7MbXcYrj1NcsQLmbppQvxw';
+    if (!window.sb && window.supabase) {
+      window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+        auth: { persistSession:true, storageKey:'sb-booking' }
+      });
+      console.log('[init] Supabase client ready (contact)');
+    }
+  </script>
+  <script src="app.js?v=15"></script>
+</body>
+</html>

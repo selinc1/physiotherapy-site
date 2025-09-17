@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Create Account</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="wrap">
+    <strong>Stretch Mate</strong>
+    <nav>
+      <a href="index.html?nosplash=1">About</a>
+      <a href="services.html">Services</a>
+      <a href="booking.html">Booking</a>
+      <a href="contact.html">Contact</a>
+      <a href="signin.html">Sign In</a>
+    </nav>
+    <div class="userbar">
+      <img src="assets/logo.JPG" alt="Logo" style="height:28px; vertical-align:middle; margin-right:8px;" />
+      <span id="whoami">—</span>
+      <button id="btn-logout" class="btn" type="button" style="margin-left:8px;">Logout</button>
+    </div>
+  </header>
+
+  <!-- Create Account formu -->
+  <main class="wrap signin-wrap">
+    <h1 class="signin-title">CREATE ACCOUNT</h1>
+
+    <section class="card signin-card">
+      <div id="registerView">
+        <div class="field">
+          <label>Full Name</label>
+          <input id="reg-name" type="text" placeholder="Your full name" autocomplete="name">
+        </div>
+
+        <div class="field">
+          <label>Email Address</label>
+          <input id="reg-email" type="email" placeholder="you@example.com" autocomplete="email">
+        </div>
+
+        <div class="field">
+          <label>Phone Number</label>
+          <input id="reg-phone" type="tel" placeholder="+1 (555) 123-4567" autocomplete="tel">
+        </div>
+
+        <div class="field">
+          <label>Address</label>
+          <textarea id="reg-address" placeholder="Your home address" rows="3"></textarea>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <input id="reg-password" type="password" placeholder="••••••••" autocomplete="new-password">
+        </div>
+
+        <div class="field">
+          <label>Confirm Password</label>
+          <input id="reg-password2" type="password" placeholder="••••••••" autocomplete="new-password">
+        </div>
+
+        <div class="row center">
+          <button id="btn-register" type="button" class="btn primary">Create Account</button>
+        </div>
+
+        <p class="muted small">Already have an account? <a class="link" href="signin.html">Sign In</a></p>
+
+        <p id="reg-msg" class="muted small"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap muted small">© Furkan Kus</footer>
+
+  <!-- Supabase SDK + client init -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL  = 'https://aivmxnjspqcmijenzcij.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpdm14bmpzcHFjbWlqZW56Y2lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2MjAxMDgsImV4cCI6MjA3MTE5NjEwOH0.piMJEGE1gGAy8lwwQEpqx7MbXcYrj1NcsQLmbppQvxw';
+    if (!window.sb && window.supabase) {
+      window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+        auth: { persistSession:true, storageKey:'sb-booking' }
+      });
+      console.log('[init] Supabase client ready (register)');
+    }
+  </script>
+
+  <script src="app.js?v=16"></script>
+</body>
+</html>

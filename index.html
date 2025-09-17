@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Home Physiotherapy</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+
+  
+  
+<body class="no-splash">  <!-- DOĞRU: gizli başla -->
+  <!-- SPLASH en başta -->
+  <div id="splash" role="button" aria-label="Enter site">
+    <div class="splash-inner">
+      <img class="logo" src="assets/logo.png" alt="Logo" />
+      <p class="tagline">Furkan Kus Physiotherapy Booking Site</p>
+      <div class="hint">Tap anywhere to enter</div>
+    </div>
+  </div>
+
+
+
+  <header class="wrap">
+    <strong>Furkan Kus</strong>
+    <nav>
+      <a href="index.html?nosplash=1" class="active">About</a>
+      <a href="services.html">Services</a>
+      <a href="booking.html">Booking</a>
+      <a href="contact.html">Contact</a>
+      <a href="signin.html">Sign In</a>
+    </nav>
+    <div class="userbar">
+      <img src="assets/logo.JPG" alt="Logo" style="height:28px; vertical-align:middle; margin-right:8px;" />
+      <span id="whoami">—</span>
+      <button id="btn-logout" class="btn" type="button" style="margin-left:8px;">Logout</button>
+    </div>
+  </header>
+  
+<main class="wrap">
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Home Physiotherapy </h1>
+    <p>Professional home visits for evaluation and follow-up sessions.</p>
+    <a class="btn" href="booking.html">Book a Session</a>
+  </section>
+
+  <!-- ABOUT ME -->
+  <section id="about">
+    <h2>About Me</h2>
+    <div class="about-grid">
+      <img src="assets/me.JPG" alt="Therapist photo" " class="about-photo">
+      <div class="about-text">
+        <p>Hi, I’m <strong>Furkan Kadir Kuş</strong>, a world-class athlete and sports science specialist. My athletic journey began in Turkey, where I won numerous national and international medals in bocce. In 2019, I achieved two top-five finishes at the Bocce World Championship, and in 2024, I proudly represented the USA Bocce National Team at the World Championship.
+
+Academically, I hold a degree from Hacettepe University’s Faculty of Sports Sciences, specializing in athletic performance, movement science, and flexibility training. I am also a NASM-certified personal trainer, focusing on flexibility, mobility, and sports performance. My goal is to help clients improve muscle balance, reduce injury risks, and build stronger, more resilient bodies.
+
+While working as a Flexologist at StretchLab, I received specialized training in stretch therapy and movement correction. I have developed professional-level expertise in the neck region, helping everyone from office workers to athletes relieve neck tension, improve posture, and enhance overall movement quality.
+
+My mission is to combine my international athletic background with scientific training to guide people of all ages toward healthier, stronger, and more balanced lives. By sharing my experience, I aim to elevate both the performance and quality of life of my clients..</p>
+       
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+ <section id="gallery">
+  <h2>Photo Gallery</h2>
+  <div class="gallery-grid">
+    <img src="assets/g1.jpg" alt="Session 1">
+    <img src="assets/g2.jpg" alt="Session 2">
+    <img src="assets/g3.jpg" alt="Session 3">
+    <img src="assets/g4.jpg" alt="Session 4">
+    <img src="assets/g5.jpg" alt="Session 5">
+    <img src="assets/g6.jpg" alt="Session 6">
+  </div>
+</section>
+
+  
+</main>
+
+
+  <footer class="wrap muted small">© Therapist Name</footer>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL  = 'https://aivmxnjspqcmijenzcij.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpdm14bmpzcHFjbWlqZW56Y2lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2MjAxMDgsImV4cCI6MjA3MTE5NjEwOH0.piMJEGE1gGAy8lwwQEpqx7MbXcYrj1NcsQLmbppQvxw';
+    if (!window.sb && window.supabase) {
+      window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+        auth: { persistSession:true, storageKey:'sb-booking' }
+      });
+      console.log('[init] Supabase client ready (index)');
+    }
+  </script>
+	<script src="app.js?v=15"></script>
+</body>
+</html>
