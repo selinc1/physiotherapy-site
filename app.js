@@ -1,6 +1,6 @@
 // Kullanıcı hangi sayfadaysa (signin.html ya da booking.html), dönüş adresi orası olsun
-const INDEX_URL = "http://localhost:8080/physiotherapy_site/signin.html";
-
+const ORIGIN = location.origin;
+const INDEX_URL = `${ORIGIN}/signin.html`;
 const RETURN_URL = `${location.origin}${location.pathname}`;
 const AFTER_LOGOUT = `${INDEX_URL}?loggedout=1&nosplash=1&_=${Date.now()}`;
 
