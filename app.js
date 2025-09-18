@@ -154,15 +154,18 @@ const AFTER_LOGOUT = `${INDEX_URL}?loggedout=1&nosplash=1&_=${Date.now()}`;
       else { msgEl && (msgEl.textContent = 'Signed in.'); await refreshAuthUI(); }
     });
 
+	// buton handler
 	googleBtn?.addEventListener('click', async (e) => {
 	  e.preventDefault();
 	  msgEl && (msgEl.textContent = 'Redirecting to Google…');
+	  const RETURN_URL = `${location.origin}${location.pathname}`; // bulunduğun sayfaya geri dön
 	  const { error } = await sb.auth.signInWithOAuth({
 	    provider: 'google',
-	    options: { redirectTo: RETURN_URL }
+	    options: { redirectTo: RETURN_URL } // BUNUN Supabase Redirect URLs listesinde birebir olmasına dikkat et
 	  });
 	  if (error) msgEl && (msgEl.textContent = error.message);
 	});
+
 
     // --- FORGOT PASSWORD ---
     forgotLnk?.addEventListener('click', async (e) => {
