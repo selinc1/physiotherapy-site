@@ -10,7 +10,7 @@
   <header class="wrap">
     <strong>Stretch Mate</strong>
     <nav>
-      <a href="index.html?nosplash=1" class="active">About</a>
+      <a href="index.html?nosplash=1">About</a>
       <a href="services.html">Services</a>
       <a href="booking.html">Booking</a>
       <a href="contact.html">Contact</a>
@@ -26,15 +26,15 @@
 
   <main class="wrap">
     <section id="booking">
-      <h1>Home Session Request (Draft)</h1>
-      <div class="panel">
+      <h1>Book Your Session</h1>
+      <div class="booking-form">
         <label>District
           <input id="district" placeholder="e.g. Downtown / Riverside" />
         </label>
         <label>Service
           <select id="service">
             <option value="30">Initial Evaluation (30 min)</option>
-            <option value="60">Follow-up </option>
+            <option value="60">Follow-up Session (60 min)</option>
           </select>
         </label>
         <label>Date
@@ -43,18 +43,17 @@
         <label>Time
           <select id="time"></select>
         </label>
-			       <!-- Ödeme butonu -->
-			<button id="bookBtn">Pay and Book</button>
-			
-			
-
+        <label>Notes (Optional)
+          <textarea id="notes" placeholder="Any specific areas you'd like to focus on..."></textarea>
+        </label>
+        <button id="bookBtn" class="btn-hero">Pay and Book</button>
         <p id="msg" class="muted"></p>
       </div>
     </section>
 
-    <section id="mine" style="margin-top:24px;">
+    <section id="mine">
       <h2>Your Bookings</h2>
-      <div id="myBookings" class="panel"></div>
+      <div id="myBookings" class="bookings-list"></div>
     </section>
   </main>
 
@@ -73,6 +72,32 @@
     }
   </script>
 
+
+  <script>
+    (function(){
+      const params = new URLSearchParams(location.search);
+      const dur = params.get('dur');   // "30" | "60"
+      const loc = params.get('loc');   // "STUDIO" | "HOME"
+
+      // Service dropdown (id="service")
+      const serviceEl = document.getElementById('service');
+      if (dur && serviceEl) serviceEl.value = dur;
+
+      // District alanına ipucu yaz (STUDIO / HOME bilgisinden)
+      const districtEl = document.getElementById('district');
+      if (loc && districtEl) {
+        if (loc === "STUDIO") {
+          districtEl.value = "Hyattsville Studio";
+        } else if (loc === "HOME") {
+          districtEl.placeholder = "Your Address";
+        }
+      }
+
+      // Eğer senin updatePrice gibi bir fonksiyonun varsa çağır
+      if (typeof updatePrice === 'function') updatePrice();
+    })();
+  </script>
+  
   <script src="app.js?v=14" defer></script>
 </body>
 </html>

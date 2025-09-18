@@ -10,7 +10,7 @@
    <header class="wrap">
     <strong>Stretch Mate</strong>
     <nav>
-      <a href="index.html?nosplash=1" class="active">About</a>
+      <a href="index.html?nosplash=1">About</a>
       <a href="services.html">Services</a>
       <a href="booking.html">Booking</a>
       <a href="contact.html">Contact</a>
@@ -23,17 +23,64 @@
     </div>
   </header>
   
+  <section id="services" class="container">
+  <div class="services-header">
+    <div class="services-logo">
+      <div class="logo-icon">
+        <div class="house-icon">🏠</div>
+        <div class="person-stretching">🧘‍♀️</div>
+      </div>
+      <h2 class="section-head">PRICING</h2>
+    </div>
+    <p class="section-sub">Professional Assisted Stretching for Your Body & Mind</p>
+  </div>
 
-  <main class="wrap">
-    <section>
-      <h1>Services & Fees (Draft)</h1>
-      <ul>
-        <li>Initial Evaluation · 30 min · $50 + travel fee</li>
-        <li>Follow-up Session · 60 min · $70 + travel fee</li>
-      </ul>
-      <p class="muted small">Travel fee depends on the district (draft values).</p>
-    </section>
-  </main>
+  <div class="pricing-grid"><!-- mevcut grid stilini kullanıyoruz -->
+    <!-- 30 DK -->
+    <article class="price-card">
+      <div class="title"><span>30 Minute Session</span><span class="badge">Popular</span></div>
+
+      <div class="row"><span>Studio (Hyattsville)</span><strong>$50</strong></div>
+      <div class="row"><span>At Your Location</span><strong>$80</strong></div>
+
+      <div class="packages">
+        <div class="pkg"><span>5 Sessions <span class="meta">(Studio / At Home)</span></span><strong>$225 / $375</strong></div>
+        <div class="pkg"><span>10 Sessions <span class="meta">(Studio / At Home)</span></span><strong>$400 / $700</strong></div>
+      </div>
+
+      <div class="banner">
+        <a class="btn-primary" href="/booking.html?dur=30&loc=STUDIO">BOOK STUDIO →</a>
+        <a class="btn-primary" style="margin-left:8px" href="/booking.html?dur=30&loc=HOME">BOOK AT HOME →</a>
+      </div>
+    </article>
+
+    <!-- 60 DK -->
+    <article class="price-card">
+      <div class="title"><span>60 Minute Session</span></div>
+
+      <div class="row"><span>Studio (Hyattsville)</span><strong>$90</strong></div>
+      <div class="row"><span>At Your Location</span><strong>$110</strong></div>
+
+      <div class="packages">
+        <div class="pkg"><span>5 Sessions <span class="meta">(Studio / At Home)</span></span><strong>$450 / $600</strong></div>
+        <div class="pkg"><span>10 Sessions <span class="meta">(Studio / At Home)</span></span><strong>$850 / $1100</strong></div>
+      </div>
+
+      <div class="banner">
+        <a class="btn-primary" href="/booking.html?dur=60&loc=STUDIO">BOOK STUDIO →</a>
+        <a class="btn-primary" style="margin-left:8px" href="/booking.html?dur=60&loc=HOME">BOOK AT HOME →</a>
+      </div>
+    </article>
+  </div>
+
+  <div class="services-footer">
+    <p class="note">Instagram: <strong>@stretchmatedmv</strong></p>
+    <a class="btn-hero" href="booking.html">BOOK NOW → </a>
+  </div>
+</section>
+  
+  
+
 
   <footer class="wrap muted small">© Furkan Kus</footer>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>

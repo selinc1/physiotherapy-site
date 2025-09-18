@@ -68,7 +68,14 @@ const AFTER_LOGOUT = `${INDEX_URL}?loggedout=1&nosplash=1&_=${Date.now()}`;
     // Kullanıcının rezervasyonlarını (varsa) listele
     async function fetchAndRenderMyBookings(userId){
       const container = document.getElementById('myBookings');
+      const mineSection = document.getElementById('mine');
       if (!container) return;
+      
+      // Show the "Your Bookings" section
+      if (mineSection) {
+        mineSection.classList.add('show');
+      }
+      
       container.textContent = 'Loading your bookings…';
       const { data, error } = await sb
         .from('bookings')
@@ -98,6 +105,14 @@ const AFTER_LOGOUT = `${INDEX_URL}?loggedout=1&nosplash=1&_=${Date.now()}`;
       });
       container.innerHTML = '';
       container.appendChild(list);
+    }
+    
+    // Hide "Your Bookings" section when user is not logged in
+    function hideMyBookings() {
+      const mineSection = document.getElementById('mine');
+      if (mineSection) {
+        mineSection.classList.remove('show');
+      }
     }
     // ---- Tek noktadan görünüm değiştir
     function showSignedIn(isIn){
@@ -130,6 +145,7 @@ const AFTER_LOGOUT = `${INDEX_URL}?loggedout=1&nosplash=1&_=${Date.now()}`;
         if (whoamiEl) whoamiEl.textContent = '—';
         if (whoamiSigninEl) whoamiSigninEl.textContent = '—';
         logoutEls.forEach(el => el.style.setProperty('display','none','important'));
+        hideMyBookings(); // Hide "Your Bookings" section when not logged in
       }
     }
 	
