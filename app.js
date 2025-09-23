@@ -4,6 +4,43 @@ const INDEX_URL = `${ORIGIN}/signin.html`;
 const RETURN_URL = `${location.origin}${location.pathname}`;
 const AFTER_LOGOUT = `${INDEX_URL}?loggedout=1&nosplash=1&_=${Date.now()}`;
 
+/* ============ 0) MOBILE MENU ============ */
+function toggleMobileMenu() {
+  const nav = document.getElementById('mobile-nav');
+  const btn = document.querySelector('.mobile-menu-btn');
+  
+  if (nav && btn) {
+    nav.classList.toggle('show');
+    btn.classList.toggle('active');
+  }
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(event) {
+  const nav = document.getElementById('mobile-nav');
+  const btn = document.querySelector('.mobile-menu-btn');
+  
+  if (nav && btn && !nav.contains(event.target) && !btn.contains(event.target)) {
+    nav.classList.remove('show');
+    btn.classList.remove('active');
+  }
+});
+
+// Close mobile menu when clicking on a link
+document.addEventListener('DOMContentLoaded', function() {
+  const navLinks = document.querySelectorAll('#mobile-nav a');
+  navLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      const nav = document.getElementById('mobile-nav');
+      const btn = document.querySelector('.mobile-menu-btn');
+      if (nav && btn) {
+        nav.classList.remove('show');
+        btn.classList.remove('active');
+      }
+    });
+  });
+});
+
 /* ============ 1) SPLASH ============ */
 (() => {
   const splash = document.getElementById('splash');
