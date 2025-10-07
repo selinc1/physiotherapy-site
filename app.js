@@ -4,6 +4,228 @@ const INDEX_URL = `${ORIGIN}/signin.html`;
 const RETURN_URL = `${location.origin}${location.pathname}`;
 const AFTER_LOGOUT = `${INDEX_URL}?loggedout=1&nosplash=1&_=${Date.now()}`;
 
+/* ============ 0) CLIENT REVIEWS ============ */
+const fakeComments = [
+  { name: "Emily R.", text: "My therapist instantly understood where the tension was — magic hands!" },
+  { name: "Michael T.", text: "I could finally move my shoulder without pain after just one session." },
+  { name: "Sophie L.", text: "She listened carefully and explained every stretch. Super professional!" },
+  { name: "Daniel M.", text: "The therapist was kind, focused, and really helped my lower back pain." },
+  { name: "Olivia P.", text: "I felt relaxed and energized at the same time. Perfect balance!" },
+  { name: "Chris W.", text: "He noticed issues even I didn't realize I had — amazing attention to detail." },
+  { name: "Ava G.", text: "So gentle yet effective. My posture already feels better." },
+  { name: "Noah B.", text: "I've tried several therapists before, but this one truly stands out." },
+  { name: "Liam K.", text: "Professional, respectful, and results you can feel immediately." },
+  { name: "Chloe S.", text: "She made me feel totally comfortable and tailored every move to my needs." }
+];
+
+function loadReviews() {
+  const container = document.getElementById('reviewsContainer');
+  console.log('Loading reviews, container found:', !!container);
+  if (!container) {
+    console.log('Reviews container not found');
+    return;
+  }
+  
+  // Shuffle the reviews for variety
+  const shuffledReviews = [...fakeComments].sort(() => Math.random() - 0.5);
+  
+  // Display 6 random reviews
+  const reviewsToShow = shuffledReviews.slice(0, 6);
+  console.log('Displaying reviews:', reviewsToShow.length);
+  
+  container.innerHTML = reviewsToShow.map(review => `
+    <div class="review-card">
+      <div class="review-text">${review.text}</div>
+      <div class="review-author">
+        <div class="review-author-avatar">${review.name.charAt(0)}</div>
+        <div class="review-author-info">
+          <div class="review-author-name">${review.name}</div>
+          <div class="review-author-title">Client</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Load reviews when DOM is ready
+document.addEventListener('DOMContentLoaded', loadReviews);
+
+// Also try to load reviews after a short delay to ensure DOM is ready
+setTimeout(loadReviews, 100);
+
+/* ============ GUEST BOOKING ============ */
+function initGuestBooking() {
+  const showGuestBtn = document.getElementById('showGuestBooking');
+  const showRegularBtn = document.getElementById('showRegularBooking');
+  const guestSection = document.getElementById('guestBooking');
+  const regularForm = document.getElementById('regularBookingForm');
+  
+  // Check if guest parameter is in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const isGuest = urlParams.get('guest') === '1';
+  
+  if (isGuest && guestSection && regularForm) {
+    // Auto-show guest booking if guest=1 in URL
+    guestSection.style.display = 'block';
+    regularForm.style.display = 'none';
+    if (showGuestBtn) showGuestBtn.style.display = 'none';
+    if (showRegularBtn) showRegularBtn.style.display = 'inline-block';
+  }
+  
+  if (showGuestBtn && showRegularBtn && guestSection && regularForm) {
+    showGuestBtn.addEventListener('click', () => {
+      guestSection.style.display = 'block';
+      regularForm.style.display = 'none';
+      showGuestBtn.style.display = 'none';
+      showRegularBtn.style.display = 'inline-block';
+    });
+    
+    showRegularBtn.addEventListener('click', () => {
+      guestSection.style.display = 'none';
+      regularForm.style.display = 'block';
+      showGuestBtn.style.display = 'inline-block';
+      showRegularBtn.style.display = 'none';
+    });
+  }
+  
+  // Guest booking form submission
+  const guestBookBtn = document.getElementById('guestBookBtn');
+  if (guestBookBtn) {
+    guestBookBtn.addEventListener('click', handleGuestBooking);
+  }
+}
+
+function handleGuestBooking() {
+  const email = document.getElementById('guestEmail')?.value;
+  const name = document.getElementById('guestName')?.value;
+  const district = document.getElementById('guestDistrict')?.value;
+  const service = document.getElementById('guestService')?.value;
+  const date = document.getElementById('guestDate')?.value;
+  const time = document.getElementById('guestTime')?.value;
+  const notes = document.getElementById('guestNotes')?.value;
+  const msgEl = document.getElementById('guestMsg');
+  
+  if (!email || !name || !district || !service || !date || !time) {
+    if (msgEl) msgEl.textContent = 'Please fill in all required fields.';
+    return;
+  }
+  
+  if (msgEl) msgEl.textContent = 'Processing your guest booking...';
+  
+  // Simulate guest booking (you can integrate with your backend here)
+  setTimeout(() => {
+    if (msgEl) {
+      msgEl.textContent = `Thank you ${name}! Your booking has been confirmed. We've sent details to ${email}.`;
+      msgEl.style.color = 'var(--baby-blue)';
+    }
+    
+    // Reset form
+    document.getElementById('guestEmail').value = '';
+    document.getElementById('guestName').value = '';
+    document.getElementById('guestDistrict').value = '';
+    document.getElementById('guestNotes').value = '';
+  }, 2000);
+}
+
+// Initialize guest booking when DOM is ready
+document.addEventListener('DOMContentLoaded', initGuestBooking);
+
+
+/* ============ BOOKING MODAL ============ */
+function initBookingModal() {
+  const bookNowBtn = document.getElementById('bookNowBtn');
+  const modal = document.getElementById('bookingModal');
+  const closeBtn = document.getElementById('closeModal');
+  
+  if (bookNowBtn && modal) {
+    bookNowBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      modal.style.display = 'flex';
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    });
+  }
+  
+  if (closeBtn && modal) {
+    closeBtn.addEventListener('click', () => {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
+  }
+  
+  // Close modal when clicking outside
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    });
+  }
+  
+  // Close modal with Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && modal.style.display === 'flex') {
+      modal.style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+  });
+}
+
+// Initialize booking modal when DOM is ready
+document.addEventListener('DOMContentLoaded', initBookingModal);
+
+/* ============ TIME SLOTS ============ */
+function initTimeSlots() {
+  const dateInput = document.getElementById('date');
+  const timeSelect = document.getElementById('time');
+  const guestDateInput = document.getElementById('guestDate');
+  const guestTimeSelect = document.getElementById('guestTime');
+  
+  // Regular booking time slots
+  if (dateInput && timeSelect) {
+    dateInput.addEventListener('change', () => {
+      updateTimeSlots(timeSelect, dateInput.value);
+    });
+  }
+  
+  // Guest booking time slots
+  if (guestDateInput && guestTimeSelect) {
+    guestDateInput.addEventListener('change', () => {
+      updateTimeSlots(guestTimeSelect, guestDateInput.value);
+    });
+  }
+}
+
+function updateTimeSlots(timeSelect, selectedDate) {
+  if (!timeSelect) return;
+  
+  // Clear existing options
+  timeSelect.innerHTML = '';
+  
+  if (!selectedDate) {
+    timeSelect.innerHTML = '<option value="">Select a date first</option>';
+    return;
+  }
+  
+  // Generate time slots (9 AM to 6 PM, every hour)
+  const timeSlots = [
+    '09:00', '10:00', '11:00', '12:00', 
+    '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'
+  ];
+  
+  timeSelect.innerHTML = '<option value="">Select time</option>';
+  
+  timeSlots.forEach(time => {
+    const option = document.createElement('option');
+    option.value = time;
+    option.textContent = time;
+    timeSelect.appendChild(option);
+  });
+}
+
+// Initialize time slots when DOM is ready
+document.addEventListener('DOMContentLoaded', initTimeSlots);
+
 /* ============ 0) MOBILE MENU ============ */
 function toggleMobileMenu() {
   const nav = document.getElementById('mobile-nav');

@@ -55,7 +55,7 @@
       </div>
       <h2 class="hero-subtitle">Professional Assisted Stretching for Your Body & Mind</h2>
       <p class="hero-description">Experience the perfect blend of athletic expertise and scientific training. From office workers to athletes, I help everyone achieve better flexibility, mobility, and overall wellness.</p>
-      <a class="btn-hero" href="booking.html">BOOK NOW →</a>
+      <a class="btn-hero" href="#" id="bookNowBtn">BOOK NOW →</a>
     </div>
   </section>
 
@@ -77,6 +77,8 @@ My mission is to combine my international athletic background with scientific tr
     </div>
   </section>
 
+
+
   <!-- GALLERY -->
  <section id="gallery">
   <h2>Photo Gallery</h2>
@@ -90,8 +92,45 @@ My mission is to combine my international athletic background with scientific tr
   </div>
 </section>
 
-  
+  <!-- REVIEWS -->
+  <section id="reviews">
+    <h2>What My Clients Say</h2>
+    <div class="reviews-grid" id="reviewsContainer">
+      <!-- Reviews will be populated by JavaScript -->
+    </div>
+  </section>
+
 </main>
+
+<!-- Booking Modal -->
+<div id="bookingModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Choose Your Booking Option</h2>
+      <button class="modal-close" id="closeModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-description">How would you like to book your session?</p>
+      <div class="booking-options">
+        <div class="booking-option">
+          <div class="option-icon">👤</div>
+          <h3>Continue as Guest</h3>
+          <p>No account needed! Just provide your email and we'll send you confirmation.</p>
+          <a href="booking.html?guest=1" class="btn-hero">Book as Guest</a>
+        </div>
+        <div class="booking-option">
+          <div class="option-icon">🔐</div>
+          <h3>Sign Up for Account</h3>
+          <p>Create an account to manage your bookings and track your progress.</p>
+          <a href="register.html" class="btn-secondary">Sign Up</a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p class="already-member">Already have an account? <a href="signin.html">Sign In</a></p>
+      </div>
+    </div>
+  </div>
+</div>
 
 
   <footer class="wrap muted small">© Furkan Kus</footer>

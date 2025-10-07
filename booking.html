@@ -32,27 +32,72 @@
   <main class="wrap">
     <section id="booking">
       <h1>Book Your Session</h1>
+      
+      <!-- Guest Booking Option -->
+      <div id="guestBooking" class="guest-booking-section" style="display: none;">
+        <div class="guest-booking-card">
+          <h3>Book as Guest</h3>
+          <p class="guest-description">No account needed! Just provide your email and we'll send you confirmation.</p>
+          <div class="booking-form">
+            <label>Email Address
+              <input id="guestEmail" type="email" placeholder="your.email@example.com" required />
+            </label>
+            <label>Full Name
+              <input id="guestName" type="text" placeholder="Your full name" required />
+            </label>
+            <label>District
+              <input id="guestDistrict" placeholder="e.g. Downtown / Riverside" />
+            </label>
+            <label>Service
+              <select id="guestService">
+                <option value="30">Initial Evaluation (30 min)</option>
+                <option value="60">Follow-up Session (60 min)</option>
+              </select>
+            </label>
+            <label>Date
+              <input id="guestDate" type="date" />
+            </label>
+            <label>Time
+              <select id="guestTime"></select>
+            </label>
+            <label>Notes (Optional)
+              <textarea id="guestNotes" placeholder="Any specific areas you'd like to focus on..."></textarea>
+            </label>
+            <button id="guestBookBtn" class="btn-hero">Book as Guest</button>
+            <p id="guestMsg" class="muted"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Regular Booking Form -->
       <div class="booking-form">
-        <label>District
-          <input id="district" placeholder="e.g. Downtown / Riverside" />
-        </label>
-        <label>Service
-          <select id="service">
-            <option value="30">Initial Evaluation (30 min)</option>
-            <option value="60">Follow-up Session (60 min)</option>
-          </select>
-        </label>
-        <label>Date
-          <input id="date" type="date" />
-        </label>
-        <label>Time
-          <select id="time"></select>
-        </label>
-        <label>Notes (Optional)
-          <textarea id="notes" placeholder="Any specific areas you'd like to focus on..."></textarea>
-        </label>
-        <button id="bookBtn" class="btn-hero">Pay and Book</button>
-        <p id="msg" class="muted"></p>
+        <div class="booking-options">
+          <button id="showGuestBooking" class="btn-secondary">Book as Guest</button>
+          <button id="showRegularBooking" class="btn-hero" style="display: none;">Sign In to Book</button>
+        </div>
+        
+        <div id="regularBookingForm">
+          <label>District
+            <input id="district" placeholder="e.g. Downtown / Riverside" />
+          </label>
+          <label>Service
+            <select id="service">
+              <option value="30">Initial Evaluation (30 min)</option>
+              <option value="60">Follow-up Session (60 min)</option>
+            </select>
+          </label>
+          <label>Date
+            <input id="date" type="date" />
+          </label>
+          <label>Time
+            <select id="time"></select>
+          </label>
+          <label>Notes (Optional)
+            <textarea id="notes" placeholder="Any specific areas you'd like to focus on..."></textarea>
+          </label>
+          <button id="bookBtn" class="btn-hero">Pay and Book</button>
+          <p id="msg" class="muted"></p>
+        </div>
       </div>
     </section>
 
