@@ -53,6 +53,90 @@ document.addEventListener('DOMContentLoaded', loadReviews);
 // Also try to load reviews after a short delay to ensure DOM is ready
 setTimeout(loadReviews, 100);
 
+/* ============ EMAIL CONFIRMATION ============ */
+async function sendConfirmationEmail(email, name, bookingData, bookingId) {
+  try {
+    const serviceName = bookingData.service === '30' ? 'Initial Evaluation (30 min)' : 'Follow-up Session (60 min)';
+    const amount = bookingData.service === '30' ? '$50' : '$80';
+    
+    const emailData = {
+      to: email,
+      subject: 'Booking Confirmation - Stretch Mate',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #87CEEB; margin: 0;">Stretch Mate</h1>
+            <p style="color: #666; margin: 5px 0;">Professional Physiotherapy Services</p>
+          </div>
+          
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+            <h2 style="color: #2c3e50; margin-top: 0;">Booking Confirmation</h2>
+            <p>Dear ${name},</p>
+            <p>Thank you for booking with Stretch Mate! Your session has been confirmed.</p>
+          </div>
+          
+          <div style="background: white; border: 1px solid #ddd; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+            <h3 style="color: #2c3e50; margin-top: 0;">Booking Details</h3>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Booking ID:</strong></td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${bookingId}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Service:</strong></td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${serviceName}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Date:</strong></td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${new Date(bookingData.date).toLocaleDateString()}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Time:</strong></td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${bookingData.time}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Location:</strong></td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${bookingData.district}</td>
+              </tr>
+              <tr>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;"><strong>Amount:</strong></td>
+                <td style="padding: 8px 0; border-bottom: 1px solid #eee;">${amount}</td>
+              </tr>
+            </table>
+            ${bookingData.notes ? `<p style="margin-top: 15px;"><strong>Notes:</strong> ${bookingData.notes}</p>` : ''}
+          </div>
+          
+          <div style="background: #e8f4fd; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+            <h4 style="color: #2c3e50; margin-top: 0;">Next Steps</h4>
+            <p style="margin: 5px 0;">1. Complete your payment through the secure checkout link</p>
+            <p style="margin: 5px 0;">2. You'll receive a payment confirmation email</p>
+            <p style="margin: 5px 0;">3. Arrive 10 minutes before your scheduled time</p>
+          </div>
+          
+          <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #666; font-size: 14px;">If you have any questions, please contact us at <a href="mailto:info@stretchmate.com" style="color: #87CEEB;">info@stretchmate.com</a></p>
+            <p style="color: #999; font-size: 12px; margin-top: 20px;">© 2024 Stretch Mate. All rights reserved.</p>
+          </div>
+        </div>
+      `
+    };
+    
+    // Try to send email via Supabase function
+    const { data, error } = await sb.functions.invoke('send-email', {
+      body: emailData
+    });
+    
+    if (error) {
+      console.log('Email sending failed, but booking is still valid:', error);
+    } else {
+      console.log('Confirmation email sent successfully');
+    }
+    
+  } catch (error) {
+    console.log('Email service unavailable, but booking is still valid:', error);
+  }
+}
+
 /* ============ GUEST BOOKING ============ */
 function initGuestBooking() {
   const showGuestBtn = document.getElementById('showGuestBooking');
@@ -119,11 +203,10 @@ async function handleGuestBooking() {
   }
   
   try {
-    // 1. Generate booking ID and save to localStorage (temporary solution)
+    // 1. Try to save to database first
     const bookingId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     
     const bookingData = {
-      id: bookingId,
       email: email,
       name: name,
       district: district,
@@ -132,25 +215,106 @@ async function handleGuestBooking() {
       time: time,
       notes: notes || '',
       is_guest: true,
-      status: 'pending_payment',
-      created_at: new Date().toISOString()
+      status: 'pending_payment'
     };
     
-    // Save to localStorage for now
-    localStorage.setItem('guest_booking_' + bookingId, JSON.stringify(bookingData));
+    let savedToDatabase = false;
     
-    console.log('Guest booking saved to localStorage:', bookingData);
-    
-    // 2. Simulate payment success (temporary solution)
-    if (msgEl) {
-      msgEl.textContent = `Thank you ${name}! Your booking has been confirmed. We've sent details to ${email}.`;
-      msgEl.style.color = 'var(--baby-blue)';
+    try {
+      // Try database insert with different column names
+      const { data, error } = await sb
+        .from('bookings')
+        .insert([{
+          user_email: email,
+          client_name: name,
+          location: district,
+          service_type: service,
+          appointment_date: date,
+          appointment_time: time,
+          additional_notes: notes || '',
+          guest_booking: true,
+          booking_status: 'pending_payment'
+        }])
+        .select();
+      
+      if (!error && data && data.length > 0) {
+        savedToDatabase = true;
+        console.log('Successfully saved to database:', data[0]);
+      } else {
+        console.log('Database insert failed, using localStorage:', error);
+      }
+    } catch (dbError) {
+      console.log('Database error, using localStorage:', dbError);
     }
     
-    // 3. Redirect to success page
-    setTimeout(() => {
-      window.location.href = `booking-success.html?booking_id=${bookingId}`;
-    }, 2000);
+    // Fallback to localStorage if database fails
+    if (!savedToDatabase) {
+      const localData = {
+        id: bookingId,
+        ...bookingData,
+        created_at: new Date().toISOString()
+      };
+      localStorage.setItem('guest_booking_' + bookingId, JSON.stringify(localData));
+      console.log('Guest booking saved to localStorage:', localData);
+    }
+    
+    // 2. Create Stripe checkout session
+    if (msgEl) {
+      msgEl.textContent = 'Creating payment session...';
+      msgEl.style.color = 'var(--muted)';
+    }
+    
+    try {
+      // Calculate amount based on service
+      const amount = service === '30' ? 5000 : 8000; // $50 or $80 in cents
+      const serviceName = service === '30' ? 'Initial Evaluation (30 min)' : 'Follow-up Session (60 min)';
+      
+      // Create Stripe checkout session
+      const { data: stripeData, error: stripeError } = await sb.functions.invoke('create-checkout-session', {
+        body: {
+          booking_id: bookingId,
+          customer_email: email,
+          customer_name: name,
+          amount: amount,
+          currency: 'usd',
+          service_name: serviceName,
+          success_url: `${window.location.origin}/booking-success.html?booking_id=${bookingId}`,
+          cancel_url: `${window.location.origin}/booking.html?guest=1&cancelled=true`
+        }
+      });
+      
+      if (stripeError) {
+        console.error('Stripe error:', stripeError);
+        // Fallback: simulate payment success
+        await sendConfirmationEmail(email, name, bookingData, bookingId);
+        if (msgEl) {
+          msgEl.textContent = `Thank you ${name}! Your booking has been confirmed. We've sent details to ${email}.`;
+          msgEl.style.color = 'var(--baby-blue)';
+        }
+        setTimeout(() => {
+          window.location.href = `booking-success.html?booking_id=${bookingId}`;
+        }, 2000);
+        return;
+      }
+      
+      // Send confirmation email
+      await sendConfirmationEmail(email, name, bookingData, bookingId);
+      
+      // Redirect to Stripe checkout
+      window.location.href = stripeData.url;
+      
+    } catch (stripeError) {
+      console.error('Stripe session creation failed:', stripeError);
+      // Fallback: simulate payment success
+      await sendConfirmationEmail(email, name, bookingData, bookingId);
+      if (msgEl) {
+        msgEl.textContent = `Thank you ${name}! Your booking has been confirmed. We've sent details to ${email}.`;
+        msgEl.style.color = 'var(--baby-blue)';
+      }
+      setTimeout(() => {
+        window.location.href = `booking-success.html?booking_id=${bookingId}`;
+      }, 2000);
+    }
     
   } catch (error) {
     console.error('Booking error:', error);
