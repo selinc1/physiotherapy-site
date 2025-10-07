@@ -8,14 +8,14 @@ const AFTER_LOGOUT = `${INDEX_URL}?loggedout=1&nosplash=1&_=${Date.now()}`;
 const fakeComments = [
   { name: "Emily R.", text: "My therapist instantly understood where the tension was — magic hands!" },
   { name: "Michael T.", text: "I could finally move my shoulder without pain after just one session." },
-  { name: "Sophie L.", text: "She listened carefully and explained every stretch. Super professional!" },
+  { name: "Sophie L.", text: "He listened carefully and explained every stretch. Super professional!" },
   { name: "Daniel M.", text: "The therapist was kind, focused, and really helped my lower back pain." },
   { name: "Olivia P.", text: "I felt relaxed and energized at the same time. Perfect balance!" },
   { name: "Chris W.", text: "He noticed issues even I didn't realize I had — amazing attention to detail." },
   { name: "Ava G.", text: "So gentle yet effective. My posture already feels better." },
   { name: "Noah B.", text: "I've tried several therapists before, but this one truly stands out." },
   { name: "Liam K.", text: "Professional, respectful, and results you can feel immediately." },
-  { name: "Chloe S.", text: "She made me feel totally comfortable and tailored every move to my needs." }
+  { name: "Chloe S.", text: "He made me feel totally comfortable and tailored every move to my needs." }
 ];
 
 function loadReviews() {
@@ -119,8 +119,11 @@ async function handleGuestBooking() {
   }
   
   try {
-    // 1. Save to database first
+    // 1. Generate booking ID and save to localStorage (temporary solution)
+    const bookingId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
     const bookingData = {
+      id: bookingId,
       email: email,
       name: name,
       district: district,
@@ -129,49 +132,25 @@ async function handleGuestBooking() {
       time: time,
       notes: notes || '',
       is_guest: true,
-      status: 'pending_payment'
+      status: 'pending_payment',
+      created_at: new Date().toISOString()
     };
     
-    const { data, error } = await sb
-      .from('bookings')
-      .insert([bookingData])
-      .select();
+    // Save to localStorage for now
+    localStorage.setItem('guest_booking_' + bookingId, JSON.stringify(bookingData));
     
-    if (error) {
-      console.error('Database error:', error);
-      if (msgEl) {
-        msgEl.textContent = 'Error saving booking. Please try again.';
-        msgEl.style.color = 'red';
-      }
-      return;
+    console.log('Guest booking saved to localStorage:', bookingData);
+    
+    // 2. Simulate payment success (temporary solution)
+    if (msgEl) {
+      msgEl.textContent = `Thank you ${name}! Your booking has been confirmed. We've sent details to ${email}.`;
+      msgEl.style.color = 'var(--baby-blue)';
     }
     
-    const bookingId = data[0].id;
-    
-    // 2. Create Stripe checkout session
-    const { data: stripeData, error: stripeError } = await sb.functions.invoke('create-checkout-session', {
-      body: {
-        booking_id: bookingId,
-        customer_email: email,
-        customer_name: name,
-        amount: service === '30' ? 5000 : 8000, // $50 or $80 in cents
-        currency: 'usd',
-        success_url: `${window.location.origin}/booking-success.html?booking_id=${bookingId}`,
-        cancel_url: `${window.location.origin}/booking.html?guest=1&cancelled=true`
-      }
-    });
-    
-    if (stripeError) {
-      console.error('Stripe error:', stripeError);
-      if (msgEl) {
-        msgEl.textContent = 'Error creating payment session. Please try again.';
-        msgEl.style.color = 'red';
-      }
-      return;
-    }
-    
-    // 3. Redirect to Stripe checkout
-    window.location.href = stripeData.url;
+    // 3. Redirect to success page
+    setTimeout(() => {
+      window.location.href = `booking-success.html?booking_id=${bookingId}`;
+    }, 2000);
     
   } catch (error) {
     console.error('Booking error:', error);

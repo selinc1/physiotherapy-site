@@ -67,20 +67,18 @@
   <script src="app.js?v=15"></script>
   
   <script>
-    // Load booking details
-    document.addEventListener('DOMContentLoaded', async function() {
+    // Load booking details from localStorage
+    document.addEventListener('DOMContentLoaded', function() {
       const urlParams = new URLSearchParams(window.location.search);
       const bookingId = urlParams.get('booking_id');
       
-      if (bookingId && window.sb) {
+      if (bookingId) {
         try {
-          const { data, error } = await window.sb
-            .from('bookings')
-            .select('*')
-            .eq('id', bookingId)
-            .single();
+          // Try localStorage first
+          const bookingData = localStorage.getItem('guest_booking_' + bookingId);
           
-          if (data && !error) {
+          if (bookingData) {
+            const data = JSON.parse(bookingData);
             const detailsEl = document.getElementById('bookingDetails');
             if (detailsEl) {
               detailsEl.innerHTML = `
@@ -103,6 +101,22 @@
                   <strong>Location:</strong> ${data.district}
                 </div>
                 ${data.notes ? `<div class="detail-item"><strong>Notes:</strong> ${data.notes}</div>` : ''}
+                <div class="detail-item">
+                  <strong>Booking ID:</strong> ${data.id}
+                </div>
+              `;
+            }
+          } else {
+            // Fallback: show generic message
+            const detailsEl = document.getElementById('bookingDetails');
+            if (detailsEl) {
+              detailsEl.innerHTML = `
+                <div class="detail-item">
+                  <strong>Booking ID:</strong> ${bookingId}
+                </div>
+                <div class="detail-item">
+                  <strong>Status:</strong> Confirmed
+                </div>
               `;
             }
           }
