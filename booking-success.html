@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Booking Confirmed - Stretch Mate</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="wrap">
+    <strong>Stretch Mate</strong>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav id="mobile-nav">
+      <a href="index.html?nosplash=1">About</a>
+      <a href="services.html">Services</a>
+      <a href="booking.html">Booking</a>
+      <a href="contact.html">Contact</a>
+      <a href="signin.html">Sign In</a>
+    </nav>
+    <div class="userbar">
+      <img src="assets/logo.JPG" alt="Logo" style="height:28px; vertical-align:middle; margin-right:8px;" />
+      <span id="whoami">—</span>
+      <button id="btn-logout" class="btn" type="button" style="margin-left:8px;">Logout</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="success-section">
+      <div class="success-card">
+        <div class="success-icon">✅</div>
+        <h1>Booking Confirmed!</h1>
+        <p class="success-message">Thank you for booking with Stretch Mate. Your session has been confirmed and payment processed successfully.</p>
+        
+        <div class="booking-details" id="bookingDetails">
+          <!-- Booking details will be populated by JavaScript -->
+        </div>
+        
+        <div class="success-actions">
+          <a href="index.html" class="btn-hero">Back to Home</a>
+          <a href="contact.html" class="btn-secondary">Contact Us</a>
+        </div>
+        
+        <div class="email-notice">
+          <p>📧 A confirmation email has been sent to your email address with all the details.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap muted small">© Selin Coşkun</footer>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL  = 'https://aivmxnjspqcmijenzcij.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFpdm14bmpzcHFjbWlqZW56Y2lqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2MjAxMDgsImV4cCI6MjA3MTE5NjEwOH0.piMJEGE1gGAy8lwwQEpqx7MbXcYrj1NcsQLmbppQvxw';
+    if (!window.sb && window.supabase) {
+      window.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+        auth: { persistSession:true, storageKey:'sb-booking' }
+      });
+      console.log('[init] Supabase client ready (booking-success)');
+    }
+  </script>
+  <script src="app.js?v=15"></script>
+  
+  <script>
+    // Load booking details
+    document.addEventListener('DOMContentLoaded', async function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const bookingId = urlParams.get('booking_id');
+      
+      if (bookingId && window.sb) {
+        try {
+          const { data, error } = await window.sb
+            .from('bookings')
+            .select('*')
+            .eq('id', bookingId)
+            .single();
+          
+          if (data && !error) {
+            const detailsEl = document.getElementById('bookingDetails');
+            if (detailsEl) {
+              detailsEl.innerHTML = `
+                <div class="detail-item">
+                  <strong>Name:</strong> ${data.name}
+                </div>
+                <div class="detail-item">
+                  <strong>Email:</strong> ${data.email}
+                </div>
+                <div class="detail-item">
+                  <strong>Service:</strong> ${data.service === '30' ? 'Initial Evaluation (30 min)' : 'Follow-up Session (60 min)'}
+                </div>
+                <div class="detail-item">
+                  <strong>Date:</strong> ${new Date(data.date).toLocaleDateString()}
+                </div>
+                <div class="detail-item">
+                  <strong>Time:</strong> ${data.time}
+                </div>
+                <div class="detail-item">
+                  <strong>Location:</strong> ${data.district}
+                </div>
+                ${data.notes ? `<div class="detail-item"><strong>Notes:</strong> ${data.notes}</div>` : ''}
+              `;
+            }
+          }
+        } catch (error) {
+          console.error('Error loading booking details:', error);
+        }
+      }
+    });
+  </script>
+</body>
+</html>

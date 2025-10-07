@@ -95,7 +95,7 @@ function initGuestBooking() {
   }
 }
 
-function handleGuestBooking() {
+async function handleGuestBooking() {
   const email = document.getElementById('guestEmail')?.value;
   const name = document.getElementById('guestName')?.value;
   const district = document.getElementById('guestDistrict')?.value;
@@ -106,25 +106,80 @@ function handleGuestBooking() {
   const msgEl = document.getElementById('guestMsg');
   
   if (!email || !name || !district || !service || !date || !time) {
-    if (msgEl) msgEl.textContent = 'Please fill in all required fields.';
+    if (msgEl) {
+      msgEl.textContent = 'Please fill in all required fields.';
+      msgEl.style.color = 'red';
+    }
     return;
   }
   
-  if (msgEl) msgEl.textContent = 'Processing your guest booking...';
+  if (msgEl) {
+    msgEl.textContent = 'Processing your guest booking...';
+    msgEl.style.color = 'var(--muted)';
+  }
   
-  // Simulate guest booking (you can integrate with your backend here)
-  setTimeout(() => {
-    if (msgEl) {
-      msgEl.textContent = `Thank you ${name}! Your booking has been confirmed. We've sent details to ${email}.`;
-      msgEl.style.color = 'var(--baby-blue)';
+  try {
+    // 1. Save to database first
+    const bookingData = {
+      email: email,
+      name: name,
+      district: district,
+      service: service,
+      date: date,
+      time: time,
+      notes: notes || '',
+      is_guest: true,
+      status: 'pending_payment'
+    };
+    
+    const { data, error } = await sb
+      .from('bookings')
+      .insert([bookingData])
+      .select();
+    
+    if (error) {
+      console.error('Database error:', error);
+      if (msgEl) {
+        msgEl.textContent = 'Error saving booking. Please try again.';
+        msgEl.style.color = 'red';
+      }
+      return;
     }
     
-    // Reset form
-    document.getElementById('guestEmail').value = '';
-    document.getElementById('guestName').value = '';
-    document.getElementById('guestDistrict').value = '';
-    document.getElementById('guestNotes').value = '';
-  }, 2000);
+    const bookingId = data[0].id;
+    
+    // 2. Create Stripe checkout session
+    const { data: stripeData, error: stripeError } = await sb.functions.invoke('create-checkout-session', {
+      body: {
+        booking_id: bookingId,
+        customer_email: email,
+        customer_name: name,
+        amount: service === '30' ? 5000 : 8000, // $50 or $80 in cents
+        currency: 'usd',
+        success_url: `${window.location.origin}/booking-success.html?booking_id=${bookingId}`,
+        cancel_url: `${window.location.origin}/booking.html?guest=1&cancelled=true`
+      }
+    });
+    
+    if (stripeError) {
+      console.error('Stripe error:', stripeError);
+      if (msgEl) {
+        msgEl.textContent = 'Error creating payment session. Please try again.';
+        msgEl.style.color = 'red';
+      }
+      return;
+    }
+    
+    // 3. Redirect to Stripe checkout
+    window.location.href = stripeData.url;
+    
+  } catch (error) {
+    console.error('Booking error:', error);
+    if (msgEl) {
+      msgEl.textContent = 'An error occurred. Please try again.';
+      msgEl.style.color = 'red';
+    }
+  }
 }
 
 // Initialize guest booking when DOM is ready
