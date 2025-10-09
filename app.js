@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', loadReviews);
 // Also try to load reviews after a short delay to ensure DOM is ready
 setTimeout(loadReviews, 100);
 
+
 /* ============ EMAIL CONFIRMATION ============ */
 async function sendConfirmationEmail(email, name, bookingData, bookingId) {
   try {
@@ -121,16 +122,16 @@ async function sendConfirmationEmail(email, name, bookingData, bookingId) {
       `
     };
     
-    // Try to send email via Supabase function
-    const { data, error } = await sb.functions.invoke('send-email', {
-      body: emailData
+    // Log email content (for now)
+    console.log('📧 Email would be sent to:', email);
+    console.log('📧 Subject:', emailData.subject);
+    console.log('📧 Booking details:', {
+      name: name,
+      service: serviceName,
+      date: new Date(bookingData.date).toLocaleDateString(),
+      time: bookingData.time,
+      amount: amount
     });
-    
-    if (error) {
-      console.log('Email sending failed, but booking is still valid:', error);
-    } else {
-      console.log('Confirmation email sent successfully');
-    }
     
   } catch (error) {
     console.log('Email service unavailable, but booking is still valid:', error);
@@ -258,62 +259,30 @@ async function handleGuestBooking() {
       console.log('Guest booking saved to localStorage:', localData);
     }
     
-    // 2. Create Stripe checkout session
+    // 2. Send confirmation email first
+    await sendConfirmationEmail(email, name, bookingData, bookingId);
+    
+    // 3. Redirect to payment (same as normal booking)
     if (msgEl) {
-      msgEl.textContent = 'Creating payment session...';
+      msgEl.textContent = 'Booking saved. Redirecting to payment...';
       msgEl.style.color = 'var(--muted)';
     }
     
-    try {
-      // Calculate amount based on service
-      const amount = service === '30' ? 5000 : 8000; // $50 or $80 in cents
-      const serviceName = service === '30' ? 'Initial Evaluation (30 min)' : 'Follow-up Session (60 min)';
-      
-      // Create Stripe checkout session
-      const { data: stripeData, error: stripeError } = await sb.functions.invoke('create-checkout-session', {
-        body: {
-          booking_id: bookingId,
-          customer_email: email,
-          customer_name: name,
-          amount: amount,
-          currency: 'usd',
-          service_name: serviceName,
-          success_url: `${window.location.origin}/booking-success.html?booking_id=${bookingId}`,
-          cancel_url: `${window.location.origin}/booking.html?guest=1&cancelled=true`
-        }
-      });
-      
-      if (stripeError) {
-        console.error('Stripe error:', stripeError);
-        // Fallback: simulate payment success
-        await sendConfirmationEmail(email, name, bookingData, bookingId);
-        if (msgEl) {
-          msgEl.textContent = `Thank you ${name}! Your booking has been confirmed. We've sent details to ${email}.`;
-          msgEl.style.color = 'var(--baby-blue)';
-        }
-        setTimeout(() => {
-          window.location.href = `booking-success.html?booking_id=${bookingId}`;
-        }, 2000);
-        return;
-      }
-      
-      // Send confirmation email
-      await sendConfirmationEmail(email, name, bookingData, bookingId);
-      
-      // Redirect to Stripe checkout
-      window.location.href = stripeData.url;
-      
-    } catch (stripeError) {
-      console.error('Stripe session creation failed:', stripeError);
-      // Fallback: simulate payment success
-      await sendConfirmationEmail(email, name, bookingData, bookingId);
+    // Save booking ID to localStorage for success page
+    try { 
+      localStorage.setItem('last_booking_id', bookingId); 
+    } catch {}
+    
+    // Redirect to Stripe payment links (same as normal booking)
+    if (service === '30') {
+      window.location.href = "https://book.stripe.com/test_dRm4gAe5N1exfF9cwYdfG00";
+    } else if (service === '60') {
+      window.location.href = "https://buy.stripe.com/test_3cI28sbXFcXf2Sn2WodfG01";
+    } else {
       if (msgEl) {
-        msgEl.textContent = `Thank you ${name}! Your booking has been confirmed. We've sent details to ${email}.`;
-        msgEl.style.color = 'var(--baby-blue)';
+        msgEl.textContent = 'No payment link defined for this service.';
+        msgEl.style.color = 'red';
       }
-      setTimeout(() => {
-        window.location.href = `booking-success.html?booking_id=${bookingId}`;
-      }, 2000);
     }
     
   } catch (error) {
